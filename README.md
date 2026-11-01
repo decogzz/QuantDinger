@@ -419,6 +419,34 @@ docker compose up -d --build
 docker compose ps
 ```
 
+### Daily operations: start, stop, and restart
+
+Containers use `restart: unless-stopped`, so the stack starts itself when
+Docker Desktop launches — after a reboot, starting Docker Desktop is all it
+takes, and no other command is needed.
+
+```bash
+# Start (or after a reboot: just launch Docker Desktop)
+docker compose up -d
+
+# Health check — all services should read "Up ... (healthy)"
+docker compose ps
+
+# Stop without removing containers (frees the stack's RAM/CPU when idle)
+docker compose stop
+
+# Start again after a stop
+docker compose start
+
+# Tail a service's logs (backend first when debugging)
+docker logs quantdinger-backend -f
+```
+
+Stop with `docker compose down` only when you also want the network removed;
+add `-v` only when you intend to delete the database volume — with the data
+gone, the generated PostgreSQL password is unrecoverable and a fresh
+`scripts/bootstrap_env.py` run is required.
+
 The base stack does not start Prometheus, Grafana, or Alertmanager. This keeps
 the default open-source installation smaller.
 
