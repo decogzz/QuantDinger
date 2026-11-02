@@ -369,9 +369,9 @@ sseclient-py==1.9.0
     # via alpaca-py
 stomp-py==9.0.0
     # via tigeropen
-ta-lib==0.8.2
+ta-lib==0.8.3
     # via -r requirements.txt
-tigeropen==3.7.2
+tigeropen==3.8.0
     # via -r requirements.txt
 tiktoken==0.14.0
     # via litellm
@@ -386,6 +386,7 @@ tqdm==4.70.1
     #   openai
 typing-extensions==4.16.0
     # via
+    #   anyio
     #   beautifulsoup4
     #   click-repl
     #   huggingface-hub

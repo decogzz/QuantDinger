@@ -888,9 +888,16 @@ def calculate_tail_risk(
 
     if observations >= 3:
         raw_skew = float(clean_returns.skew())
+        # pandas>=3 returns nan for the skew of a zero-variance series (0/0);
+        # pandas 2 returned 0.0. A flat series is symmetric — preserve 0.0.
+        if math.isnan(raw_skew) and observations > 0 and float(clean_returns.std()) == 0.0:
+            raw_skew = 0.0
         result["skewness"] = raw_skew if math.isfinite(raw_skew) else None
     if observations >= 4:
         raw_kurt = float(clean_returns.kurt())
+        # Same zero-variance convention: excess kurtosis of a flat series is 0.0.
+        if math.isnan(raw_kurt) and observations > 0 and float(clean_returns.std()) == 0.0:
+            raw_kurt = 0.0
         result["kurtosis"] = raw_kurt if math.isfinite(raw_kurt) else None
 
     mean_ret = float(clean_returns.mean())
