@@ -11,10 +11,9 @@ pandas>=3.0.6
 # Strategy API V2 technical indicator runtime. Wheels bundle the C library.
 TA-Lib==0.8.2
 exchange-calendars>=4.13.2,<5
-# LiteLLM currently declares filelock<4.0, but the 4.2.4 runtime is compatible
-# and resolves CVE-2026-112940, CVE-2026-112913, and CVE-2026-112907.
-# Production installs the complete verified lock with --no-deps.
-filelock>=4.2.4,<5
+# LiteLLM declares filelock<4.0; production installs the lock with --no-deps
+# so the 4.x runtime (CVE-2026 fixes) remains compatible.
+filelock>=4.2.4
 requests>=2.34.2
 # CVE-2026-97687 and related redirect/decompression advisories; 2.8.0+
 urllib3>=2.8.0,<3
@@ -42,9 +41,6 @@ psycopg2-binary>=2.9.13
 prometheus-client>=0.26.0,<1
 # Kafka event backbone
 confluent-kafka>=2.16.0,<3
-# Redis cache (optional but recommended for multi-worker setups).
-# Celery 5.6 / Kombu 5.6 currently require redis-py <6.5. This client remains
-# compatible with the Redis 8 server used by the production stack.
 redis>=6.4.0,<6.5
 # CVE-2026-114613; 1.2.3+
 msgpack>=1.2.3,<2

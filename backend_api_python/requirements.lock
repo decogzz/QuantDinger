@@ -1,150 +1,451 @@
-# Generated from requirements.txt for the verified Python 3.12 Linux production image.
+# Generated from requirements.txt for the verified Python 3.14 Linux production image.
 # Regenerate and validate this file whenever direct production requirements change.
+# Regenerate with: uv pip compile requirements.txt --python-version 3.14 --strip-markers
 aiohappyeyeballs==2.7.1
+    # via aiohttp
 aiohttp==3.14.5
+    # via
+    #   -r requirements.txt
+    #   litellm
 aiosignal==1.4.0
-akracer==0.0.14
-akshare==1.19.1
+    # via aiohttp
+akshare==1.20.21
+    # via -r requirements.txt
 alpaca-py==0.44.0
-amqp==5.3.1
-annotated-types==0.7.0
-anyio==4.14.2
+    # via -r requirements.txt
+amqp==5.4.1
+    # via kombu
+annotated-types==0.8.0
+    # via pydantic
+anyio==4.16.0
+    # via
+    #   httpx
+    #   openai
 apispec==6.10.0
+    # via flask-smorest
 attrs==26.1.0
+    # via
+    #   aiohttp
+    #   jsonschema
+    #   referencing
+babel==2.18.0
+    # via delorean
 backoff==2.2.1
+    # via tigeropen
 bcrypt==5.0.0
+    # via -r requirements.txt
 beautifulsoup4==4.15.0
-billiard==4.2.4
+    # via
+    #   akshare
+    #   yfinance
+billiard==4.3.1
+    # via celery
 blinker==1.9.0
-boto3==1.43.118
-botocore==1.43.118
+    # via flask
+boto3==1.43.123
+    # via litellm
+botocore==1.43.123
+    # via
+    #   boto3
+    #   s3transfer
 celery==5.6.3
-certifi==2026.10.19
-cffi==2.0.0
-charset-normalizer==3.4.7
-click==8.4.2
+    # via -r requirements.txt
+certifi==2026.10.23
+    # via
+    #   -r requirements.txt
+    #   curl-cffi
+    #   httpcore
+    #   httpx
+    #   litellm
+    #   requests
+cffi==2.1.1
+    # via
+    #   cryptography
+    #   curl-cffi
+charset-normalizer==3.5.2
+    # via
+    #   reportlab
+    #   requests
+click==8.5.0
+    # via
+    #   celery
+    #   click-didyoumean
+    #   click-plugins
+    #   click-repl
+    #   flask
+    #   huggingface-hub
+    #   litellm
+    #   tigeropen
 click-didyoumean==0.3.1
+    # via celery
 click-plugins==1.1.1.2
-click-repl==0.3.0
-confluent-kafka==2.16.0
+    # via celery
+click-repl==0.4.1
+    # via celery
+colorama==0.4.6
+    # via
+    #   qrcode
+    #   tqdm
+confluent-kafka==2.16.1
+    # via -r requirements.txt
 cryptography==50.0.2
-curl-cffi==0.15.0
-decorator==5.3.1
+    # via
+    #   -r requirements.txt
+    #   tigeropen
+curl-cffi==0.17.0
+    # via
+    #   akshare
+    #   yfinance
 delorean==2.0.0
+    # via tigeropen
 distro==1.9.0
-docopt==0.6.2
+    # via openai
+docopt-ng==0.9.0
+    # via stomp-py
 et-xmlfile==2.0.0
+    # via openpyxl
 eventkit==1.0.3
+    # via ib-insync
 exchange-calendars==4.13.2
+    # via -r requirements.txt
 fastuuid==0.14.0
-filelock==4.2.4
+    # via litellm
+filelock==4.2.6
+    # via
+    #   --override overrides.txt
+    #   -r requirements.txt
+    #   huggingface-hub
+    #   litellm
 finnhub-python==2.4.29
+    # via -r requirements.txt
 flask==3.1.3
+    # via
+    #   -r requirements.txt
+    #   flask-cors
+    #   flask-smorest
 flask-cors==6.0.5
+    # via -r requirements.txt
 flask-smorest==0.47.0
+    # via -r requirements.txt
 frozenlist==1.8.0
-fsspec==2026.6.0
-gunicorn==26.2.0
+    # via
+    #   aiohttp
+    #   aiosignal
+fsspec==2026.9.0
+    # via huggingface-hub
 getmac==0.9.6
+    # via tigeropen
+gunicorn==26.2.0
+    # via -r requirements.txt
 h11==0.16.0
+    # via httpcore
 h2==4.4.1
-hf-xet==1.5.1
+    # via httpx
+hf-xet==1.8.0
+    # via huggingface-hub
 hpack==4.2.0
+    # via h2
 html5lib==1.1
+    # via akshare
 httpcore==1.0.9
+    # via httpx
 httpx==0.28.1
-huggingface-hub==1.23.0
+    # via
+    #   huggingface-hub
+    #   litellm
+    #   openai
+huggingface-hub==1.33.0
+    # via
+    #   litellm
+    #   tokenizers
+humanize==4.16.0
+    # via delorean
 hyperframe==6.1.0
+    # via h2
 ib-insync==0.9.86
-idna==3.18
+    # via -r requirements.txt
+idna==3.20
+    # via
+    #   anyio
+    #   httpx
+    #   requests
+    #   yarl
 importlib-metadata==8.9.0
+    # via litellm
 itsdangerous==2.2.0
+    # via flask
 jinja2==3.1.6
-jiter==0.16.0
+    # via
+    #   flask
+    #   litellm
+jiter==0.18.0
+    # via openai
 jmespath==1.1.0
+    # via
+    #   boto3
+    #   botocore
 jproperties==2.1.2
-jsonpath==0.82.2
+    # via tigeropen
 jsonschema==4.26.0
+    # via litellm
 jsonschema-specifications==2025.9.1
+    # via jsonschema
 kombu==5.6.2
+    # via celery
 korean-lunar-calendar==0.4.0
-litellm==1.106.3
-lxml==6.1.1
-markdown-it-py==4.2.0
-markupsafe==3.0.3
+    # via exchange-calendars
+litellm==1.106.6
+    # via -r requirements.txt
+lxml==6.1.3
+    # via
+    #   akshare
+    #   yfinance
+markupsafe==3.0.4
+    # via
+    #   flask
+    #   jinja2
+    #   werkzeug
 marshmallow==4.3.1
-mdurl==0.1.2
-msgpack==1.2.3
-multidict==6.9.1
+    # via
+    #   -r requirements.txt
+    #   apispec
+    #   flask-smorest
+    #   webargs
+mini-racer==0.14.1
+    # via akshare
+msgpack==1.2.4
+    # via
+    #   -r requirements.txt
+    #   alpaca-py
+multidict==7.2.1
+    # via
+    #   aiohttp
+    #   yarl
 multitasking==0.0.13
+    # via yfinance
 nest-asyncio==1.6.0
-numpy==2.5.1
-openai==2.45.0
+    # via ib-insync
+numpy==2.5.4
+    # via
+    #   eventkit
+    #   exchange-calendars
+    #   pandas
+    #   ta-lib
+    #   yfinance
+openai==2.54.0
+    # via litellm
 openpyxl==3.1.5
-packaging==26.2
-pandas==3.0.6
-peewee==4.1.2
+    # via akshare
+packaging==26.3
+    # via
+    #   apispec
+    #   huggingface-hub
+    #   kombu
+    #   litellm
+    #   webargs
+pandas==3.1.0
+    # via
+    #   -r requirements.txt
+    #   akshare
+    #   alpaca-py
+    #   exchange-calendars
+    #   tigeropen
+    #   yfinance
+peewee==4.5.3
+    # via yfinance
 pillow==13.0.0
-platformdirs==4.10.0
+    # via
+    #   -r requirements.txt
+    #   qrcode
+    #   reportlab
+platformdirs==4.14.3
+    # via yfinance
 prometheus-client==0.26.0
-prompt-toolkit==3.0.52
-propcache==0.5.2
-protobuf==7.35.1
+    # via -r requirements.txt
+prompt-toolkit==3.0.53
+    # via click-repl
+propcache==0.5.4
+    # via
+    #   aiohttp
+    #   yarl
+protobuf==7.36.2
+    # via
+    #   tigeropen
+    #   yfinance
 psycopg2-binary==2.9.13
-py-mini-racer==0.6.0
-pycparser==3.0
-pycryptodome==4.2.0
-pydantic==2.13.4
-pydantic-core==2.46.4
-pydantic-settings==2.16.0
-pygments==2.20.0
-pyjwt==2.15.1
-pyluach==2.3.0
-pyotp==2.10.0
+    # via -r requirements.txt
 pyasn1==0.6.5
+    # via
+    #   rsa
+    #   tigeropen
+pycparser==3.12
+    # via cffi
+pydantic==2.14.2
+    # via
+    #   alpaca-py
+    #   litellm
+    #   openai
+    #   pydantic-settings
+pydantic-core==2.50.2
+    # via pydantic
+pydantic-settings==2.16.2
+    # via litellm
+pyjwt==2.15.1
+    # via -r requirements.txt
+pyluach==2.3.0
+    # via exchange-calendars
+pyotp==2.10.0
+    # via -r requirements.txt
 pypdf==6.21.4
+    # via -r requirements.txt
 pysocks==1.7.1
+    # via -r requirements.txt
 python-dateutil==2.9.0.post0
+    # via
+    #   botocore
+    #   celery
+    #   delorean
+    #   pandas
+    #   tigeropen
 python-dotenv==1.2.4
-python-socks==3.1.1
-pytz==2026.2
+    # via
+    #   -r requirements.txt
+    #   litellm
+    #   pydantic-settings
+python-socks==3.2.1
+    # via -r requirements.txt
+pytz==2026.6
+    # via
+    #   alpaca-py
+    #   tigeropen
+    #   yfinance
 pyyaml==6.0.3
+    # via
+    #   -r requirements.txt
+    #   huggingface-hub
+    #   litellm
 qrcode==8.2
+    # via -r requirements.txt
 redis==6.4.0
+    # via
+    #   -r requirements.txt
+    #   kombu
 referencing==0.37.0
-regex==2026.7.10
-reportlab==5.0.1
+    # via
+    #   jsonschema
+    #   jsonschema-specifications
+regex==2026.9.29
+    # via tiktoken
+reportlab==5.1.0
+    # via -r requirements.txt
 requests==2.34.2
-rich==15.0.0
-rpds-py==2026.6.3
+    # via
+    #   -r requirements.txt
+    #   akshare
+    #   alpaca-py
+    #   finnhub-python
+    #   tiktoken
+    #   yfinance
+rpds-py==2026.9.1
+    # via
+    #   jsonschema
+    #   referencing
 rsa==4.9.1
-s3transfer==0.19.2
-six==1.17.0
+    # via tigeropen
+s3transfer==0.19.3
+    # via boto3
 simplejson==4.2.0
+    # via tigeropen
+six==1.17.0
+    # via
+    #   html5lib
+    #   jproperties
+    #   python-dateutil
 sniffio==1.3.1
-soupsieve==2.9
+    # via openai
+soupsieve==3.0.4
+    # via beautifulsoup4
 sseclient-py==1.9.0
-stomp.py==9.0.0
+    # via alpaca-py
+stomp-py==9.0.0
+    # via tigeropen
 ta-lib==0.8.2
-tabulate==0.10.0
-tiktoken==0.13.0
+    # via -r requirements.txt
 tigeropen==3.7.2
-tokenizers==0.23.1
-toolz==1.1.0
-tqdm==4.68.4
+    # via -r requirements.txt
+tiktoken==0.14.0
+    # via litellm
+tokenizers==0.23.3
+    # via litellm
+toolz==1.2.0
+    # via exchange-calendars
+tqdm==4.70.1
+    # via
+    #   akshare
+    #   huggingface-hub
+    #   openai
 typing-extensions==4.16.0
-typing-inspection==0.4.2
-tzdata==2026.3
-tzlocal==5.4.4
+    # via
+    #   beautifulsoup4
+    #   click-repl
+    #   huggingface-hub
+    #   litellm
+    #   openai
+    #   pydantic
+    #   pydantic-core
+    #   pydantic-settings
+    #   typing-inspection
+typing-inspection==0.4.4
+    # via
+    #   pydantic
+    #   pydantic-settings
+tzdata==2026.6
+    # via
+    #   exchange-calendars
+    #   kombu
+    #   pandas
+    #   tzlocal
+tzlocal==5.4.5
+    # via
+    #   celery
+    #   delorean
 urllib3==2.8.0
+    # via
+    #   -r requirements.txt
+    #   akshare
+    #   botocore
+    #   requests
+    #   tigeropen
 vine==5.1.0
-wcwidth==0.8.2
+    # via
+    #   amqp
+    #   celery
+    #   kombu
+wcwidth==0.9.4
+    # via prompt-toolkit
 webargs==8.7.1
-webencodings==0.5.1
+    # via flask-smorest
+webencodings==0.6.1
+    # via html5lib
 websocket-client==1.9.2
-websockets==16.1
+    # via
+    #   -r requirements.txt
+    #   stomp-py
+websockets==17.4
+    # via
+    #   alpaca-py
+    #   yfinance
 werkzeug==3.1.9
+    # via
+    #   -r requirements.txt
+    #   flask
+    #   flask-cors
+    #   flask-smorest
 xlrd==2.0.2
+    # via akshare
 yarl==1.25.1
+    # via aiohttp
 yfinance==1.7.0
-zipp==4.1.0
+    # via -r requirements.txt
+zipp==4.1.2
+    # via importlib-metadata

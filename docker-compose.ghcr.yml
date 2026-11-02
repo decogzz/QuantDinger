@@ -58,7 +58,7 @@ services:
       - quantdinger-network
 
   postgres:
-    image: ${POSTGRES_IMAGE:-${IMAGE_PREFIX:-}postgres:18.3-alpine}
+    image: ${POSTGRES_IMAGE:-${IMAGE_PREFIX:-}postgres:18.6-alpine}
     container_name: quantdinger-db
     restart: unless-stopped
     environment:
@@ -86,7 +86,9 @@ services:
       retries: 5
 
   redis:
-    image: ${REDIS_IMAGE:-${IMAGE_PREFIX:-}redis:8-alpine}
+    # Valkey is the open-source Redis continuation; RESP-compatible with
+    # redis-py, celery, and everything else in this stack.
+    image: ${REDIS_IMAGE:-${IMAGE_PREFIX:-}valkey/valkey:9.0-alpine}
     container_name: quantdinger-redis
     restart: unless-stopped
     environment:
@@ -96,19 +98,19 @@ services:
       - -ec
       - |
         if [ -n "$$REDIS_PASSWORD" ]; then set -- --requirepass "$$REDIS_PASSWORD"; fi
-        exec redis-server --maxmemory "${REDIS_CACHE_MAXMEMORY:-128mb}" --maxmemory-policy allkeys-lru "$$@"
+        exec valkey-server --maxmemory "${REDIS_CACHE_MAXMEMORY:-128mb}" --maxmemory-policy allkeys-lru "$$@"
     ports:
       - "${REDIS_BIND:-127.0.0.1:6379}:6379"
     networks:
       - quantdinger-network
     healthcheck:
-      test: ["CMD-SHELL", "if [ -n \"$$REDIS_PASSWORD\" ]; then redis-cli --no-auth-warning -a \"$$REDIS_PASSWORD\" ping; else redis-cli ping; fi"]
+      test: ["CMD-SHELL", "if [ -n \"$$REDIS_PASSWORD\" ]; then valkey-cli --no-auth-warning -a \"$$REDIS_PASSWORD\" ping; else valkey-cli ping; fi"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis-jobs:
-    image: ${REDIS_IMAGE:-${IMAGE_PREFIX:-}redis:8-alpine}
+    image: ${REDIS_IMAGE:-${IMAGE_PREFIX:-}valkey/valkey:9.0-alpine}
     container_name: quantdinger-redis-jobs
     restart: unless-stopped
     environment:
@@ -118,19 +120,19 @@ services:
       - -ec
       - |
         if [ -n "$$REDIS_PASSWORD" ]; then set -- --requirepass "$$REDIS_PASSWORD"; fi
-        exec redis-server --appendonly yes --appendfsync everysec --save 60 1000 --maxmemory "${REDIS_JOBS_MAXMEMORY:-512mb}" --maxmemory-policy noeviction "$$@"
+        exec valkey-server --appendonly yes --appendfsync everysec --save 60 1000 --maxmemory "${REDIS_JOBS_MAXMEMORY:-512mb}" --maxmemory-policy noeviction "$$@"
     volumes:
       - celery_redis_data:/data
     networks:
       - quantdinger-network
     healthcheck:
-      test: ["CMD-SHELL", "if [ -n \"$$REDIS_PASSWORD\" ]; then redis-cli --no-auth-warning -a \"$$REDIS_PASSWORD\" ping; else redis-cli ping; fi"]
+      test: ["CMD-SHELL", "if [ -n \"$$REDIS_PASSWORD\" ]; then valkey-cli --no-auth-warning -a \"$$REDIS_PASSWORD\" ping; else valkey-cli ping; fi"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   kafka:
-    image: ${KAFKA_IMAGE:-apache/kafka:4.3.1}
+    image: ${KAFKA_IMAGE:-apache/kafka:4.4.0}
     container_name: quantdinger-kafka
     restart: unless-stopped
     environment:

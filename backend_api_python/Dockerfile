@@ -1,6 +1,7 @@
 # QuantDinger Backend API Dockerfile
 # BASE_IMAGE can be overridden from docker-compose (e.g. IMAGE_PREFIX for mirror pulls).
-ARG BASE_IMAGE=python:3.12-slim-bookworm@sha256:6a0e06f5ba0b373d051aabd3fffb9b873f27f9a2a3a14bcbe37dee6f0e3bbc70
+# Python 3.14: latest stable CPython (3.15 lacks stable wheels for litellm & friends).
+ARG BASE_IMAGE=python:3.14-slim-trixie
 FROM ${BASE_IMAGE}
 
 # BUILD_REGION switches apt/PyPI sources:
