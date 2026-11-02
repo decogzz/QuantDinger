@@ -73,6 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
       packages: read
       security-events: write
     steps:
