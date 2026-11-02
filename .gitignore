@@ -106,3 +106,6 @@ backend_api_python/data/memory/
 # Docker
 # ========================
 docker-compose.override.yml
+
+# local infra backups
+celery-redis-backup*.tar.gz
