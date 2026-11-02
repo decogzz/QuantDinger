@@ -12,8 +12,11 @@ from pathlib import Path
 
 BASE = "http://127.0.0.1:5000"
 ADMIN_USER = "quantdinger"
-# Local-dev password (same source as scripts/bootstrap_env.py / .env); paper-only keys.
-ADMIN_PASSWORD = os.environ.get("QD_ADMIN_PASSWORD", "g541h23yvrwqkbdz")
+# Never hardcode credentials in source. Set QD_ADMIN_PASSWORD in the shell or
+# a gitignored local env file; the script refuses to run without it.
+ADMIN_PASSWORD = os.environ.get("QD_ADMIN_PASSWORD")
+if not ADMIN_PASSWORD:
+    raise SystemExit("QD_ADMIN_PASSWORD is not set — refusing to run")
 
 
 def post(path: str, payload: dict, token: str | None = None) -> dict:
