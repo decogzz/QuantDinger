@@ -8,6 +8,18 @@ on:
   schedule:
     - cron: '17 3 * * 1'
 
+# Code scanning (CodeQL) on this PRIVATE repo needs two token scopes the
+# previous contents:read-only default did not carry: actions:read for the
+# action's GET /actions/runs/{id} status call (the exact 403 in run
+# 41476673921: "Resource not accessible by integration ... get-a-workflow-run")
+# and security-events:write for the SARIF upload. Both are granted at the
+# workflow level; the audit/secret-scan jobs below keep their tighter
+# per-job scopes, so only CodeQL gets the wider token.
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+
 concurrency:
   group: security-ci-${{ github.ref }}
   cancel-in-progress: true

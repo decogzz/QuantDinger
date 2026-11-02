@@ -1,18 +1,39 @@
+# Gitleaks fingerprints to ignore (one per line). Each entry was triaged on
+# 2026-11-02; none is a live credential. Two groups:
+#
+# 1) OUR ONE REAL LEAK — rotated, dead, history must stay (upstream merge-base):
+#    scripts/connect_alpaca.py committed an admin password default in 16b5540,
+#    removed in 4b22742 same day. The password was rotated immediately (bcrypt
+#    hash replaced in Postgres, old value verified rejected by the login API),
+#    so the historical string is dead. History rewrite would destroy the
+#    upstream merge-base, so the finding is pinned here instead.
+16b554042c1e2006f183f84efd1dc03edb198281:scripts/connect_alpaca.py:generic-api-key:16
+#
+# 2) INHERITED UPSTREAM FALSE POSITIVES (present in OpenByteInc/QuantDinger
+#    history before the private split; triaged 2026-11-02 — fixtures, docs
+#    examples, config-field names, minified bundles, public mock token):
+#    - test fixture password "StrongPass123"
+681b23c09bf701936c0eb9496d1b393817f10e80:backend_api_python/tests/test_registration_rate_limit.py:generic-api-key:194
+#    - "idempotency_key=" usage examples in the MCP README
+10afffae3f8cf430a486f9d398d5c6f467c41cd2:mcp_server/README.md:generic-api-key:67
+10afffae3f8cf430a486f9d398d5c6f467c41cd2:mcp_server/README.md:generic-api-key:68
+#    - "Idempotency-Key" header examples in docs
 88e19267eb24342c2c4ca16436539e0fe168acb9:README.md:generic-api-key:433
 88e19267eb24342c2c4ca16436539e0fe168acb9:docs/agent/AGENT_QUICKSTART.md:generic-api-key:48
-5d5fdcce6a6ec3e44e334c2777d8a6330f27fa97:frontend/dist/js/app.1cdb0765.js:generic-api-key:1
-5d5fdcce6a6ec3e44e334c2777d8a6330f27fa97:frontend/dist/js/app-legacy.01d94457.js:generic-api-key:1
-5f60f419e6389a9a9c1b84d6fbf0bcbae2e6ab10:frontend/dist/js/app-legacy.5a8cbb15.js:generic-api-key:1
-5f60f419e6389a9a9c1b84d6fbf0bcbae2e6ab10:frontend/dist/js/app.1a2a9620.js:generic-api-key:1
-72f5b269a5a45516e1c96530cb30e385cec9dd16:frontend/dist/js/app-legacy.197e6560.js:generic-api-key:1
-72f5b269a5a45516e1c96530cb30e385cec9dd16:frontend/dist/js/app.456127b3.js:generic-api-key:1
-21c3ca2c0c427ed2a40619a6fea40f3c7fec6735:frontend/dist/js/app.3bfd91e8.js:generic-api-key:1
-21c3ca2c0c427ed2a40619a6fea40f3c7fec6735:frontend/dist/js/app-legacy.d6d98b57.js:generic-api-key:1
-ffdd2ffbae99cd77f90c9c9facd6f290d033dd2b:backend_api_python/app/routes/settings.py:generic-api-key:610
-f43312a8587248c326fd4dda89e8140954178246:quantdinger_vue/src/mock/services/auth.js:generic-api-key:30
+#    - dict keys NAMING config fields ('key': 'USDT_..._CONTRACT' etc.) — field
+#      identifiers, not secret values
 b277e53750c68d560f439389f5f3d8cae0665635:backend_api_python/app/routes/settings.py:generic-api-key:1541
 b277e53750c68d560f439389f5f3d8cae0665635:backend_api_python/app/routes/settings.py:generic-api-key:1549
 b277e53750c68d560f439389f5f3d8cae0665635:backend_api_python/app/routes/settings.py:generic-api-key:1593
-10afffae3f8cf430a486f9d398d5c6f467c41cd2:mcp_server/README.md:generic-api-key:67
-10afffae3f8cf430a486f9d398d5c6f467c41cd2:mcp_server/README.md:generic-api-key:68
-681b23c09bf701936c0eb9496d1b393817f10e80:backend_api_python/tests/test_registration_rate_limit.py:generic-api-key:194
+ffdd2ffbae99cd77f90c9c9facd6f290d033dd2b:backend_api_python/app/routes/settings.py:generic-api-key:610
+#    - minified webpack bundles (base64/entropy noise in frontend/dist)
+5d5fdcce6a6ec3e44e334c2777d8a6330f27fa97:frontend/dist/js/app-legacy.01d94457.js:generic-api-key:1
+5d5fdcce6a6ec3e44e334c2777d8a6330f27fa97:frontend/dist/js/app.1cdb0765.js:generic-api-key:1
+5f60f419e6389a9a9c1b84d6fbf0bcbae2e6ab10:frontend/dist/js/app-legacy.5a8cbb15.js:generic-api-key:1
+5f60f419e6389a9a9c1b84d6fbf0bcbae2e6ab10:frontend/dist/js/app.1a2a9620.js:generic-api-key:1
+72f5b269a5a45516e1c96530cb30e385cec9dd16:frontend/dist/js/app.456127b3.js:generic-api-key:1
+72f5b269a5a45516e1c96530cb30e385cec9dd16:frontend/dist/js/app-legacy.197e6560.js:generic-api-key:1
+21c3ca2c0c427ed2a40619a6fea40f3c7fec6735:frontend/dist/js/app.3bfd91e8.js:generic-api-key:1
+21c3ca2c0c427ed2a40619a6fea40f3c7fec6735:frontend/dist/js/app-legacy.d6d98b57.js:generic-api-key:1
+#    - public mock token from the upstream Vue admin template (well-known fixture)
+f43312a8587248c326fd4dda89e8140954178246:quantdinger_vue/src/mock/services/auth.js:generic-api-key:30

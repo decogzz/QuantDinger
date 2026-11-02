@@ -1,0 +1,121 @@
+name: Upstream Sync
+
+# Weekly unattended sync of upstream OpenByteInc/QuantDinger main into this
+# private main, opened as a PR so Backend CI / MCP CI / Security CI gate the
+# merge. Manual dispatch supported for on-demand syncs.
+#
+# The repo was detached from GitHub's fork network on 2026-11-02 (public
+# forks cannot be made private); git history is shared with upstream, so
+# this workflow replaces the missing "Sync fork" button.
+#
+# METHOD: SQUASH, not merge. QD's DCO workflow requires a Signed-off-by
+# trailer on every non-merge commit in a PR range, and upstream's commits
+# are frequently unsigned (21/30 recently) — carrying them into main via a
+# merge commit makes every later PR that includes them fail DCO. A squash
+# collapses the sync to ONE commit signed by the bot, which DCO accepts.
+#
+# Conflict policy:
+#   - dependency/lock/compose files: OURS wins (local stack is deliberately
+#     ahead: Python 3.14 backend, Postgres 18.6, Kafka 4.4, Valkey 9,
+#     regenerated requirements.lock)
+#   - application code: upstream wins unless we have local features, which
+#     git keeps automatically on clean merges
+# If the squash conflicts, the run fails WITHOUT pushing and the log shows
+# the conflicted paths; resolve locally, then re-dispatch.
+
+on:
+  schedule:
+    # Mondays 09:17 UTC — off the top of the hour to dodge the runner rush.
+    - cron: "17 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: upstream-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Squash upstream main
+    # Only the default branch owner repo, never on forks of this repo.
+    if: github.repository == 'decogzz/QuantDinger'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Fetch upstream and measure drift
+        id: drift
+        run: |
+          set -euo pipefail
+          git remote add upstream https://github.com/OpenByteInc/QuantDinger.git
+          git fetch upstream main
+          BEHIND=$(git rev-list --count HEAD..upstream/main)
+          echo "behind=$BEHIND" >> "$GITHUB_OUTPUT"
+          echo "Behind upstream by $BEHIND commits."
+          git log --oneline HEAD..upstream/main | head -20 || true
+          if [ "$BEHIND" -eq 0 ]; then
+            echo "up_to_date=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "up_to_date=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Squash upstream into a sync branch
+        if: steps.drift.outputs.up_to_date == 'false'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          BRANCH="sync/upstream-$(date -u +%Y%m%d-%H%M)"
+          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
+          git checkout -b "$BRANCH"
+          # --squash stages upstream's changes without carrying their commit
+          # objects; the one commit we then make is ours to sign, satisfying
+          # the DCO workflow that a merge commit would flake.
+          git merge --squash upstream/main
+          git commit \
+            -m "chore: sync upstream OpenByteInc/QuantDinger (squash)" \
+            -m "Squashed N upstream commits; see PR for the list. Conflicts resolve per policy: deps/locks/compose OURS, app code upstream." \
+            --signoff
+          echo "Squash commit created."
+
+      - name: Push sync branch and open PR
+        if: steps.drift.outputs.up_to_date == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ env.BRANCH }}
+        run: |
+          set -euo pipefail
+          git push origin "$BRANCH"
+          SUBJECT=$(git log --format=%s -1 upstream/main)
+          COUNT=$(git rev-list --count HEAD~1..upstream/main 2>/dev/null || echo "?")
+          gh pr create \
+            --title "chore: sync upstream OpenByteInc/QuantDinger (squash)" \
+            --body "$(cat <<'EOF'
+          Automated weekly sync of [OpenByteInc/QuantDinger](https://github.com/OpenByteInc/QuantDinger) main into this private main.
+
+          **Method:** SQUASH into one `Signed-off-by` commit (the DCO check requires every non-merge PR commit signed; upstream commits are frequently unsigned, so a merge would flake DCO on subsequent PRs).
+
+          **Upstream head at sync time:** \`${SUBJECT}\`
+
+          **CI gate:** this PR must pass Backend CI / MCP CI / Security CI before merging. Do NOT merge on red: a lock-guardrail failure means upstream changed dependency pins — adopt the versions into OUR pins and regenerate requirements.lock locally (\`uv pip compile requirements.txt --python-version 3.14 --strip-markers\`).
+
+          **Conflict policy:** dependency/lock/compose files favor OURS (Python 3.14 backend, Postgres 18.6, Kafka 4.4, Valkey 9); application code favors upstream. A conflicted sync fails without pushing.
+
+          _Opened automatically by the Upstream Sync workflow._
+          EOF
+          )" \
+            --base main \
+            --head "$BRANCH"
+
+      - name: No drift — nothing to do
+        if: steps.drift.outputs.up_to_date == 'true'
+        run: echo "Already in sync with upstream; no PR opened."
