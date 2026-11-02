@@ -109,3 +109,4 @@ docker-compose.override.yml
 
 # local infra backups
 celery-redis-backup*.tar.gz
+.qd-admin-newpw.txt
