@@ -157,9 +157,12 @@ services:
     networks:
       - quantdinger-network
     healthcheck:
-      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+      # TCP probe only. The old check (kafka-broker-api-versions.sh) launches a
+      # full JVM every interval (~1.6 CPU-seconds per run), causing periodic
+      # CPU spikes on the host. `nc` is present in apache/kafka images.
+      test: ["CMD-SHELL", "nc -z localhost 9092"]
       interval: 10s
-      timeout: 10s
+      timeout: 5s
       retries: 12
       start_period: 20s
 
